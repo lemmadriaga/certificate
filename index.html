@@ -9,25 +9,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
       async function generatePDF() {
+        // Extract Query Parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userName = urlParams.get('name') || 'Your Name';
+        const completionDate = new Date().toLocaleDateString();
+
+        // Update the User Name and Date Fields
+        document.getElementById('user-name').textContent = userName;
+        document.getElementById('completion-date').textContent = completionDate;
+
         const certificateElement = document.body;
-    
+
         try {
+          // Wait for the content to update
+          await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay for updates to render
+
+          // Capture the certificate as a canvas
           const canvas = await html2canvas(certificateElement, { scale: 2 });
           const imgData = canvas.toDataURL('image/png');
-    
+
+          // Create the PDF
           const pdf = new jspdf.jsPDF('landscape', 'px', 'a4');
           const imgWidth = pdf.internal.pageSize.getWidth();
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
+
           pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    
-          const userName = new URLSearchParams(window.location.search).get('name') || 'Certificate';
+
+          // Download the PDF
           pdf.save(`${userName}-Certificate.pdf`);
         } catch (error) {
           console.error('Error generating PDF:', error);
         }
       }
-    
+
       // Trigger download when the page loads
       window.onload = generatePDF;
     </script>
