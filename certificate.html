@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificate of Completion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+      async function generatePDF() {
+        const certificateElement = document.body;
+    
+        try {
+          const canvas = await html2canvas(certificateElement, { scale: 2 });
+          const imgData = canvas.toDataURL('image/png');
+    
+          const pdf = new jspdf.jsPDF('landscape', 'px', 'a4');
+          const imgWidth = pdf.internal.pageSize.getWidth();
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    
+          const userName = new URLSearchParams(window.location.search).get('name') || 'Certificate';
+          pdf.save(`${userName}-Certificate.pdf`);
+        } catch (error) {
+          console.error('Error generating PDF:', error);
+        }
+      }
+    
+      // Trigger download when the page loads
+      window.onload = generatePDF;
+    </script>
+    
+    <style>
+      /* Existing styles here */
+      .signature-overlay {
+        position: absolute;
+        left: 0;
+        top: -4rem;
+        height: 8rem;
+        width: 20rem;
+        margin-top: 33rem;
+        margin-left: 3rem;
+        object-fit: contain;
+        z-index: 10;
+      }
+      .text-certificate-purple {
+        color: #8a2be2; /* Example purple color */
+      }
+      .text-certificate-blue {
+        color: #4169e1; /* Example blue color */
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "certificate-blue": "#2B5BA9",
+              "certificate-purple": "#2D1B69",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white w-full max-w-4xl shadow-lg relative overflow-hidden">
+      <div class="relative">
+        <img
+          src="assets/signature.png"
+          alt="Signature"
+          class="signature-overlay"
+        />
+      </div>
+      <!-- Background Pattern -->
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_center,#f0f0f0_1px,transparent_1px)] bg-[length:40px_40px] opacity-20"
+      ></div>
+
+      <!-- Background Overlay -->
+      <img
+        src="assets/bg-overlay.png"
+        alt=""
+        class="absolute top-0 left-0 w-full h-auto object-cover"
+      />
+
+      <!-- Content Container -->
+      <div class="relative p-8 space-y-8">
+        <!-- Header -->
+        <div class="flex justify-between items-start">
+          <div class="space-y-0 ml-6">
+            <div
+              class="bg-certificate-blue text-white px-2 py-2 text-4xl md:text-5xl font-bold inline-block"
+            >
+              CERTIFICATE
+            </div>
+            <div
+              class="text-certificate-blue px-2 py-1 text-4xl md:text-5xl font-bold inline-block"
+            >
+              OF COMPLETION
+            </div>
+          </div>
+          <div class="flex gap-4 items-center mr-10">
+            <img
+              src="assets/safetalks.png"
+              alt="SafeTalks Logo"
+              class="w-16 h-16 object-contain"
+            />
+            <img
+              src="assets/healthy.png"
+              alt="Healthy Kabataan Logo"
+              class="w-20 h-20 object-contain"
+            />
+            <img
+              src="assets/alpha.png"
+              alt="Alpha Logo"
+              class="w-16 h-16 object-contain"
+            />
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="space-y-4 text-start max-w-3xl mx-auto">
+          <p class="text-certificate-purple text-2xl">
+            This certificate is presented to
+          </p>
+          <h1
+            id="user-name" class="text-certificate-blue text-5xl md:text-6xl font-bold tracking-wide"
+          >
+            NAME HERE
+          </h1>
+          <p class="text-gray-800 text-xl leading-relaxed">
+            for successfully completing the
+            <span class="font-semibold">Seed of Knowledge</span>, a five-module
+            digital peer education training, and becoming a digitally trained
+            peer educator of the SafeTalks Project.
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="relative mt-16">
+          <!-- Blue Gradient Background with Footer Image -->
+          <div
+            class="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-certificate-blue to-[#1E3F75] -mx-8 -mb-8"
+          >
+            <img
+              class="w-full h-full object-cover"
+              src="assets/footer-bg.png"
+              alt="Footer background"
+            />
+          </div>
+
+          <!-- Signature and Date -->
+
+          <div class="relative mt-16">
+            <!-- Blue Gradient Background with Footer Image -->
+            <div class="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-certificate-blue to-[#1E3F75] -mx-8 -mb-8">
+              <img
+                class="w-full h-full object-cover"
+                src="assets/footer-bg.png"
+                alt="Footer background"
+              />
+            </div>
+      
+            <!-- Date and Footer Content -->
+            <div class="relative flex justify-between items-end px-12 pt-16">
+              <div class="space-y-2">
+                <h3 class="text-white font-bold text-xl">
+                  SAMUEL C. MADRIAGA, OTRP
+                </h3>
+                <p class="text-white text-sm">CHIEF EXECUTIVE</p>
+                <p class="text-white text-sm">
+                  ALLIANCE OF PUBLIC HEALTH ADVOCATES
+                </p>
+              </div>
+              <div class="text-center">
+                <div class="border-b-2 border-white min-w-[200px] mb-2">
+                  <p id="completion-date" class="text-white text-xl">DATE HERE</p>
+                </div>
+                <p class="text-white text-sm">Date</p>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  
+</html>
