@@ -11,40 +11,49 @@
       async function generatePDF() {
         // Extract Query Parameters
         const urlParams = new URLSearchParams(window.location.search);
-        const userName = urlParams.get('name') || 'Your Name';
-        const completionDate = urlParams.get('date') || new Date().toLocaleDateString();
-
+        const userName = urlParams.get("name") || "Your Name";
+        const completionDate = urlParams.get("date") || new Date().toLocaleDateString();
+    
         // Update the User Name and Date Fields
-        document.getElementById('user-name').textContent = userName;
-        document.getElementById('completion-date').textContent = completionDate;
-
-        // Allow time for the DOM to update
+        document.getElementById("user-name").textContent = userName;
+        document.getElementById("completion-date").textContent = completionDate;
+    
+        // Wait for DOM updates
         await new Promise((resolve) => setTimeout(resolve, 100));
-
-        const certificateElement = document.body;
-
+    
+        // Target only the certificate container
+        const certificateElement = document.querySelector(".bg-white");
+    
         try {
-          // Capture the certificate as a canvas
-          const canvas = await html2canvas(certificateElement, { scale: 2 });
-          const imgData = canvas.toDataURL('image/png');
-
-          // Create the PDF
-          const pdf = new jspdf.jsPDF('landscape', 'px', 'a4');
-          const imgWidth = pdf.internal.pageSize.getWidth();
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-
+          // Capture the certificate container only
+          const canvas = await html2canvas(certificateElement, {
+            scale: 2, // Increase the scale for better resolution
+            useCORS: true, // Allow cross-origin images
+            logging: true, // Debugging
+            backgroundColor: null, // Transparent background
+          });
+    
+          const imgData = canvas.toDataURL("image/png");
+    
+          // Define PDF dimensions to match the container's aspect ratio
+          const pdf = new jspdf.jsPDF("landscape", "mm", "a4");
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+          // Add image to the PDF
+          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    
           // Download the PDF
           pdf.save(`${userName}-Certificate.pdf`);
         } catch (error) {
-          console.error('Error generating PDF:', error);
+          console.error("Error generating PDF:", error);
         }
       }
-
+    
       // Trigger download when the page loads
       window.onload = generatePDF;
     </script>
+    
     <style>
       /* Existing styles here */
       .signature-overlay {
@@ -52,9 +61,9 @@
         left: 0;
         top: -4rem;
         height: 8rem;
-        width: 20rem;
-        margin-top: 33rem;
-        margin-left: 3rem;
+        width: 10rem;
+        margin-top: 34rem;
+        margin-left: 9rem;
         object-fit: contain;
         z-index: 10;
       }
@@ -105,7 +114,7 @@
         <div class="flex justify-between items-start">
           <div class="space-y-0 ml-6">
             <div
-              class="bg-certificate-blue text-white px-2 py-2 text-4xl md:text-5xl font-bold inline-block"
+              class="text-cecrtificate-blue px-2 py-2 text-4xl md:text-5xl font-bold inline-block"
             >
               CERTIFICATE
             </div>
@@ -189,8 +198,8 @@
                 </p>
               </div>
               <div class="text-center">
-                <div class="border-b-2 border-white min-w-[200px] mb-2">
-                  <p id="completion-date" class="text-white text-xl">DATE HER</p>
+                <div class="border-b-2 border-white min-w-[200px] mb-0">
+                  <p id="completion-date" class="text-white text-xl mb-2">DATE HERE</p>
                 </div>
                 <p class="text-white text-sm">Date</p>
               </div>
