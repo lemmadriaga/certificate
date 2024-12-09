@@ -12,18 +12,18 @@
         // Extract Query Parameters
         const urlParams = new URLSearchParams(window.location.search);
         const userName = urlParams.get('name') || 'Your Name';
-        const completionDate = new Date().toLocaleDateString();
+        const completionDate = urlParams.get('date') || new Date().toLocaleDateString();
 
         // Update the User Name and Date Fields
         document.getElementById('user-name').textContent = userName;
         document.getElementById('completion-date').textContent = completionDate;
 
+        // Allow time for the DOM to update
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
         const certificateElement = document.body;
 
         try {
-          // Wait for the content to update
-          await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay for updates to render
-
           // Capture the certificate as a canvas
           const canvas = await html2canvas(certificateElement, { scale: 2 });
           const imgData = canvas.toDataURL('image/png');
@@ -45,7 +45,6 @@
       // Trigger download when the page loads
       window.onload = generatePDF;
     </script>
-    
     <style>
       /* Existing styles here */
       .signature-overlay {
@@ -191,7 +190,7 @@
               </div>
               <div class="text-center">
                 <div class="border-b-2 border-white min-w-[200px] mb-2">
-                  <p id="completion-date" class="text-white text-xl">DATE HERE</p>
+                  <p id="completion-date" class="text-white text-xl">DATE HER</p>
                 </div>
                 <p class="text-white text-sm">Date</p>
               </div>
